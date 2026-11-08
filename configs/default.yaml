@@ -1,0 +1,43 @@
+# Base settings shared by every experiment. Other configs inherit with `base: default.yaml`.
+seed: 42
+device: auto              # auto | cuda | mps | cpu
+output_dir: runs
+
+data:
+  data_dir: data/plantvillage
+  variant: color          # color | grayscale | segmented (background removed)
+  download: true          # fetch from huggingface.co/datasets/mohanty/PlantVillage
+  delete_zip_after_extract: false
+  val_fraction: 0.1       # 10 % validation (leaf-grouped)
+  test_fraction: 0.1      # 10 % test (leaf-grouped) -> 80 % train, 10 % val, 10 % test
+  fraction: 1.0           # <1.0 = quick experiment on a subset of leaves
+  img_size: 224
+  batch_size: 64
+  num_workers: 0          # 0 is recommended on macOS (avoids shared memory permission issues)
+  class_weighting: false  # true = inverse-frequency weights in the loss (class imbalance)
+
+augment:                  # applied to training images only
+  random_resized_crop_scale: [0.8, 1.0]
+  hflip: true
+  vflip: true
+  rotation_deg: 20
+  brightness: 0.3
+  contrast: 0.2
+  saturation: 0.2
+  hue: 0.02
+
+model:
+  name: simple_cnn
+  pretrained: true        # ignored by simple_cnn
+  dropout: 0.3
+  widths: [32, 64, 128, 256]   # simple_cnn channels per block
+
+train:
+  epochs: 20
+  lr: 0.001
+  weight_decay: 0.0001
+  label_smoothing: 0.1
+  freeze_backbone_epochs: 0
+  early_stopping_patience: 5
+  amp: true               # mixed precision (GPU only)
+  evaluate_after_train: true

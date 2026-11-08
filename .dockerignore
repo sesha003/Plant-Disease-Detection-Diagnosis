@@ -1,0 +1,26 @@
+# Git & caches
+.git
+.gitignore
+.pytest_cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Environments
+.venv
+venv
+env
+
+# Exclude large dataset files & archives
+data/plantvillage/data.zip
+data/plantvillage/.cache
+
+# Exclude extra checkpoints except best.pt
+runs/**/last.pt
+
+# Documentation & IDE
+.idea
+.vscode
+docs/
+

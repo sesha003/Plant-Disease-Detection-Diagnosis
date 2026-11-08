@@ -1,0 +1,10 @@
+# Architecture 2a: transfer learning with an ImageNet-pretrained ResNet-18.
+base: default.yaml
+model:
+  name: resnet18
+  pretrained: true
+train:
+  epochs: 10
+  lr: 0.0003
+  freeze_backbone_epochs: 1   # first train only the new head, then fine-tune everything
+  early_stopping_patience: 3

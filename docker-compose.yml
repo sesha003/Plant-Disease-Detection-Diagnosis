@@ -1,0 +1,18 @@
+services:
+  plantdx-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: plant-disease-detection:latest
+    container_name: plant-disease-detector
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
+    volumes:
+      # Optional: mount local runs folder if you train new models locally
+      - ./runs:/app/runs
+      # Optional: mount data folder if you want sample images inside the container
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+

@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Dataset directory (downloaded via scripts/download_data.py)
+data/
+
+# Model checkpoint weights & experiment runs
+runs/
+*.pt
+*.pth
+*.onnx
+*.ts
+*.ptl
+
+# Build / packaging artifacts
+*.egg-info/
+dist/
+build/
+
+# Pytest & testing caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor directories
+.idea/
+.vscode/
+*.swp
