@@ -183,6 +183,4 @@ Builds a tiny fake dataset with the same folder/split/leaf-map layout as the rea
 - **Model selection on validation macro-F1**, not accuracy — the classes are imbalanced, and macro-F1 drops if any class is handled badly. The test set is evaluated once, with the best checkpoint.
 - **Transfer learning warm-up.** Pretrained models train only the new classification head for the first epoch (`freeze_backbone_epochs`), then fine-tune everything with a small learning rate.
 
-## Citation
 
-Mohanty, S. P., Hughes, D. P., & Salathé, M. (2016). *Using deep learning for image-based plant disease detection.* Frontiers in Plant Science, 7, 1419. Dataset licence: CC BY-SA 3.0.
