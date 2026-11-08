@@ -13,6 +13,35 @@ Three architectures, one pipeline:
 
 The full explanation of the project, the CNN, filters and kernel calculations is in **[`docs/PROJECT_EXPLAINED.md`](docs/PROJECT_EXPLAINED.md)**.
 
+![Streamlit app diagnosing a tomato leaf with Early blight, with Grad-CAM heatmap and top-5 predictions](docs/images/streamlit_app.png)
+
+---
+
+## Results
+
+Evaluated once on the held-out, leaf-grouped test set (5,508 colour images, 38 classes):
+
+| Model | Params | Accuracy | Top-3 accuracy | Macro-F1 | Weighted-F1 |
+|---|---|---|---|---|---|
+| **ResNet-18** (ImageNet transfer learning) | 11.2 M | **99.58 %** | 99.95 % | **99.29 %** | **99.58 %** |
+| SimpleCNN (trained from scratch) | 1.18 M | 99.29 % | **99.98 %** | 98.13 % | 99.25 % |
+
+ResNet-18 is best overall. SimpleCNN comes very close with about 10× fewer parameters, which makes it attractive for mobile or edge devices. EfficientNet-B0 has a config but has not been trained yet.
+
+## Pretrained models
+
+The trained checkpoints are attached to the [**v1.0 release**](https://github.com/sesha003/Plant-Disease-Detection-Diagnosis/releases/tag/v1.0), so you can run the app without training:
+
+```bash
+mkdir -p runs/resnet18 runs/simple_cnn
+curl -L -o runs/resnet18/best.pt   https://github.com/sesha003/Plant-Disease-Detection-Diagnosis/releases/download/v1.0/resnet18_best.pt
+curl -L -o runs/simple_cnn/best.pt https://github.com/sesha003/Plant-Disease-Detection-Diagnosis/releases/download/v1.0/simple_cnn_best.pt
+
+streamlit run app/streamlit_app.py
+```
+
+Each checkpoint contains the weights, class names and config, so nothing else is needed. The app picks up any `runs/**/best.pt` automatically.
+
 ---
 
 ## Project structure
@@ -39,7 +68,9 @@ plant-disease-detection/
 │   └── compare_runs.py         # results table across runs
 ├── app/streamlit_app.py        # small web demo
 ├── tests/test_pipeline.py      # end-to-end test on synthetic data (no internet needed)
-├── docs/PROJECT_EXPLAINED.md
+├── docs/
+│   ├── PROJECT_EXPLAINED.md    # full walkthrough: dataset, CNN, kernels, training
+│   └── images/                 # README screenshots
 ├── requirements.txt
 └── pyproject.toml
 ```
@@ -49,7 +80,8 @@ plant-disease-detection/
 ## Setup
 
 ```bash
-cd plant-disease-detection
+git clone https://github.com/sesha003/Plant-Disease-Detection-Diagnosis.git
+cd Plant-Disease-Detection-Diagnosis
 python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 pip install -e .                                        # makes `python -m plantdx.*` work anywhere
@@ -107,7 +139,7 @@ streamlit run app/streamlit_app.py -- --checkpoint $RUN/best.pt              # w
 
 ## Docker Deployment
 
-Build and run the Streamlit app container with Docker Compose:
+The image copies `runs/` into the container, so first train a model or download the [pretrained models](#pretrained-models). Then build and run the Streamlit app container with Docker Compose:
 
 ```bash
 docker compose up --build -d
@@ -125,7 +157,8 @@ Then visit [http://localhost:8501](http://localhost:8501) in your browser.
 ## Google Colab
 
 ```python
-!unzip -q plant-disease-detection.zip && %cd plant-disease-detection
+!git clone -q https://github.com/sesha003/Plant-Disease-Detection-Diagnosis.git
+%cd Plant-Disease-Detection-Diagnosis
 !pip install -q -r requirements.txt && pip install -q -e .
 !python scripts/download_data.py --variant color --data-dir /content/pv --delete-zip
 !python -m plantdx.train --config configs/resnet18.yaml --set data.data_dir=/content/pv data.num_workers=2
